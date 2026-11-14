@@ -58,14 +58,14 @@ export default function PasswordModal({ isOpen, onClose, onSuccess }) {
                   setPassword(e.target.value);
                   setError(false);
                 }}
-                placeholder="Digite a senha (padrão: adcsbc2027)"
+                placeholder="Digite sua senha de acesso..."
                 className="w-full pl-11 pr-4 py-3 bg-darkbg-950 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-adcorange focus:ring-1 focus:ring-adcorange transition-all"
               />
             </div>
             {error && (
               <div className="flex items-center gap-2 mt-2 text-red-400 text-xs">
                 <ShieldAlert className="w-4 h-4 flex-shrink-0" />
-                <span>Senha incorreta! Dica: a senha inicial é <code className="text-adclime font-mono">adcsbc2027</code></span>
+                <span>Senha incorreta. Acesso restrito à comissão técnica.</span>
               </div>
             )}
           </div>

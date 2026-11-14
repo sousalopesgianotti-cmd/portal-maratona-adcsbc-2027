@@ -6,6 +6,7 @@ import VotingModal from './components/VotingModal';
 import AnalyticsModal from './components/AnalyticsModal';
 import CircuitModal from './components/CircuitModal';
 import PasswordModal from './components/PasswordModal';
+import ChangePasswordModal from './components/ChangePasswordModal';
 import Toast from './components/Toast';
 import { storageService } from './services/storageService';
 import { 
@@ -31,6 +32,7 @@ export default function App() {
   const [initialCircuitForVote, setInitialCircuitForVote] = useState(null);
   const [isAnalyticsOpen, setIsAnalyticsOpen] = useState(false);
   const [isPasswordOpen, setIsPasswordOpen] = useState(false);
+  const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
   const [isCircuitModalOpen, setIsCircuitModalOpen] = useState(false);
   const [circuitToEdit, setCircuitToEdit] = useState(null);
 
@@ -227,6 +229,7 @@ export default function App() {
       <Header
         isAdmin={isAdmin}
         onToggleAdmin={handleToggleAdmin}
+        onOpenChangePassword={() => setIsChangePasswordOpen(true)}
         viewMode={viewMode}
         setViewMode={setViewMode}
         onOpenVoting={() => handleOpenVoteWithCircuit(null)}
@@ -397,6 +400,12 @@ export default function App() {
         isOpen={isPasswordOpen}
         onClose={() => setIsPasswordOpen(false)}
         onSuccess={handleAdminSuccess}
+      />
+
+      <ChangePasswordModal
+        isOpen={isChangePasswordOpen}
+        onClose={() => setIsChangePasswordOpen(false)}
+        onShowToast={showToast}
       />
 
       {/* Toast Notifier */}

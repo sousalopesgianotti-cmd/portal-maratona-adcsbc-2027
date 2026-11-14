@@ -10,12 +10,14 @@ import {
   Waves,
   CheckCircle2,
   Lock,
-  Unlock
+  Unlock,
+  KeyRound
 } from 'lucide-react';
 
 export default function Header({
   isAdmin,
   onToggleAdmin,
+  onOpenChangePassword,
   viewMode,
   setViewMode,
   onOpenVoting,
@@ -177,27 +179,40 @@ export default function Header({
             )}
 
             {/* Alternador de Modo Atleta / Admin */}
-            <button
-              onClick={onToggleAdmin}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all ${
-                isAdmin
-                  ? 'bg-adcorange/20 text-adcorange border-adcorange/60 shadow-lg shadow-adcorange/20'
-                  : 'bg-darkbg-850 text-slate-400 border-slate-700/60 hover:text-slate-200 hover:border-slate-500'
-              }`}
-              title={isAdmin ? 'Modo Gestão Ativo (Clique para sair)' : 'Clique para alternar para Gestão (Requer senha)'}
-            >
-              {isAdmin ? (
-                <>
-                  <ShieldCheck className="w-3.5 h-3.5 text-adcorange" />
-                  <span className="font-bold">Admin</span>
-                </>
-              ) : (
-                <>
-                  <User className="w-3.5 h-3.5" />
-                  <span>Atleta</span>
-                </>
+            <div className="flex items-center gap-1.5">
+              {isAdmin && (
+                <button
+                  onClick={onOpenChangePassword}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border border-slate-700/70 bg-darkbg-850 text-slate-300 hover:text-white hover:border-adcorange/60 shadow-sm transition-all active:scale-95"
+                  title="Alterar senha de acesso do Administrador"
+                >
+                  <KeyRound className="w-3.5 h-3.5 text-adcorange" />
+                  <span className="hidden sm:inline">Alterar Senha</span>
+                </button>
               )}
-            </button>
+
+              <button
+                onClick={onToggleAdmin}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all ${
+                  isAdmin
+                    ? 'bg-adcorange/20 text-adcorange border-adcorange/60 shadow-lg shadow-adcorange/20'
+                    : 'bg-darkbg-850 text-slate-400 border-slate-700/60 hover:text-slate-200 hover:border-slate-500'
+                }`}
+                title={isAdmin ? 'Modo Gestão Ativo (Clique para sair)' : 'Clique para alternar para Gestão (Requer senha)'}
+              >
+                {isAdmin ? (
+                  <>
+                    <ShieldCheck className="w-3.5 h-3.5 text-adcorange" />
+                    <span className="font-bold">Admin</span>
+                  </>
+                ) : (
+                  <>
+                    <User className="w-3.5 h-3.5" />
+                    <span>Atleta</span>
+                  </>
+                )}
+              </button>
+            </div>
 
           </div>
         </div>

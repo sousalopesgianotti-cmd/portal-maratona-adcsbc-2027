@@ -363,6 +363,15 @@ export const storageService = {
     return localStorage.getItem(STORAGE_KEYS.ADMIN_PASSWORD) || DEFAULT_ADMIN_PASSWORD;
   },
 
+  setAdminPassword: (newPassword) => {
+    try {
+      localStorage.setItem(STORAGE_KEYS.ADMIN_PASSWORD, newPassword);
+      return true;
+    } catch {
+      return false;
+    }
+  },
+
   verifyPassword: (pass) => {
     const realPass = storageService.getAdminPassword();
     return pass === realPass;
