@@ -60,13 +60,13 @@ export default function CircuitCard({
   return (
     <article 
       id={`circuit-${circuit.id}`}
-      className="group bg-darkbg-850/95 border border-slate-700/70 rounded-2xl overflow-hidden shadow-2xl hover:border-slate-500/90 transition-all duration-300 flex flex-col justify-between relative scroll-mt-24"
+      className="group bg-darkbg-850/95 border border-slate-700/70 rounded-2xl overflow-hidden shadow-2xl hover:border-slate-500/90 transition-all duration-300 flex flex-col h-full relative scroll-mt-24"
     >
       {/* Faixa decorativa superior fina */}
-      <div className="bg-gradient-to-r from-adcorange via-orange-500 to-adclime h-1 w-full" />
+      <div className="bg-gradient-to-r from-adcorange via-orange-500 to-adclime h-1 w-full flex-shrink-0" />
 
       {/* Corpo do Card com os 8 Campos Padronizados (Sem Foto e Sem Tag Economia) */}
-      <div className="p-4 sm:p-5 space-y-3.5">
+      <div className="p-4 sm:p-5 space-y-3.5 flex-1 flex flex-col">
         
         {/* Topo do Card: Badges de Tipo de Água e Status + Botões de Gestão Admin */}
         <div className="flex items-center justify-between gap-2 flex-wrap">
@@ -245,7 +245,7 @@ export default function CircuitCard({
       </div>
 
       {/* Rodapé de Ações: Like, Priorizar Voto e Menu Admin */}
-      <div className="p-4 bg-darkbg-900/90 border-t border-slate-800 flex items-center justify-between gap-2">
+      <div className="p-4 bg-darkbg-900/90 border-t border-slate-800 flex items-center justify-between gap-2 mt-auto flex-shrink-0">
         <button
           onClick={() => onToggleLike(circuit.id)}
           className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all active:scale-95 ${
