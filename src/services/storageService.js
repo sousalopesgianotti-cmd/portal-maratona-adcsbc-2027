@@ -143,6 +143,19 @@ export const storageService = {
     };
   },
 
+  resetAllLikes: () => {
+    try {
+      const circuits = storageService.getCircuits();
+      const updated = circuits.map(c => ({ ...c, likes: 0 }));
+      storageService.saveCircuits(updated);
+      localStorage.setItem(STORAGE_KEYS.USER_LIKES, JSON.stringify({}));
+      return { success: true, circuits: updated };
+    } catch (err) {
+      console.error('Erro ao zerar curtidas no LocalStorage:', err);
+      return { success: false, circuits: [] };
+    }
+  },
+
   // ---- CÉDULA DE VOTAÇÃO ANÔNIMA (SECRET BALLOT) ----
   getBallots: () => {
     try {

@@ -12,7 +12,8 @@ import { storageService } from './services/storageService';
 import { 
   Heart, 
   Flame,
-  Trophy
+  Trophy,
+  RotateCcw
 } from 'lucide-react';
 
 export default function App() {
@@ -80,6 +81,25 @@ export default function App() {
         type: 'info',
         message: `Curtida removida. (${totalNow}/3 escolhas)`
       });
+    }
+  };
+
+  // Zerar Todas as Curtidas dos Cards (Admin) com Diálogo de Confirmação
+  const handleResetLikes = () => {
+    if (!isAdmin) return;
+    const confirmReset = window.confirm(
+      'Deseja realmente zerar todas as curtidas dos cards? Todos os contadores voltarão para zero.'
+    );
+    if (confirmReset) {
+      const res = storageService.resetAllLikes();
+      if (res.success) {
+        setCircuits(res.circuits);
+        setUserLikes({});
+        showToast({
+          type: 'info',
+          message: '❤️ Todas as curtidas foram zeradas pela comissão técnica.'
+        });
+      }
     }
   };
 
@@ -353,6 +373,18 @@ export default function App() {
                   <span className="text-[10px] text-adclime font-black bg-adclime/20 px-1 rounded ml-0.5">Completo</span>
                 )}
               </div>
+
+              {/* Botão de Zerar Curtidas (Exclusivo Perfil Admin) */}
+              {isAdmin && (
+                <button
+                  onClick={handleResetLikes}
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-bold bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 hover:border-rose-500/60 shadow-sm transition-all active:scale-95 flex-shrink-0"
+                  title="Reiniciar e zerar a contagem de curtidas em todos os cards da temporada"
+                >
+                  <RotateCcw className="w-3.5 h-3.5 text-rose-400" />
+                  <span>Zerar Curtidas</span>
+                </button>
+              )}
 
               {/* Pódio da Equipe */}
               <div className="flex items-center gap-1.5 sm:gap-2">
