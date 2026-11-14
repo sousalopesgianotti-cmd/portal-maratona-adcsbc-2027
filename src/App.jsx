@@ -27,6 +27,10 @@ export default function App() {
   const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'kanban'
   const [isVotingEnabled, setIsVotingEnabled] = useState(() => storageService.isVotingEnabled());
 
+  // Estado de Drag & Drop para Ordenação dos Cards (Admin)
+  const [draggedIndex, setDraggedIndex] = useState(null);
+  const [dragOverIndex, setDragOverIndex] = useState(null);
+
   // Controle de Modais
   const [isVotingOpen, setIsVotingOpen] = useState(false);
   const [initialCircuitForVote, setInitialCircuitForVote] = useState(null);
@@ -135,6 +139,77 @@ export default function App() {
       setCircuits(updated);
       showToast({ type: 'success', message: `Status alterado para "${newStatus}"!` });
     }
+  };
+
+  // Reordenação de Cards por Drag & Drop (Exclusivo Modo Admin)
+  const reorderCards = (fromIndex, toIndex) => {
+    if (fromIndex === null || toIndex === null || fromIndex === toIndex) return;
+    const updated = [...circuits];
+    const [movedItem] = updated.splice(fromIndex, 1);
+    updated.splice(toIndex, 0, movedItem);
+    const reordered = updated.map((c, idx) => ({ ...c, order: idx + 1 }));
+    storageService.saveCircuits(reordered);
+    setCircuits(reordered);
+    showToast({
+      type: 'success',
+      message: `📍 "${movedItem.name}" reposicionado (${toIndex + 1}º lugar)! Ordem salva.`
+    });
+  };
+
+  const handleDragStart = (e, index) => {
+    if (!isAdmin) return;
+    setDraggedIndex(index);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', index.toString());
+  };
+
+  const handleDragOver = (e, index) => {
+    if (!isAdmin || draggedIndex === null) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    if (dragOverIndex !== index) {
+      setDragOverIndex(index);
+    }
+  };
+
+  const handleDrop = (e, targetIndex) => {
+    if (!isAdmin || draggedIndex === null) return;
+    e.preventDefault();
+    reorderCards(draggedIndex, targetIndex);
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+  };
+
+  const handleTouchStartGrip = (e, index) => {
+    if (!isAdmin) return;
+    setDraggedIndex(index);
+  };
+
+  const handleTouchMoveGrip = (e) => {
+    if (!isAdmin || draggedIndex === null) return;
+    const touch = e.touches[0];
+    const el = document.elementFromPoint(touch.clientX, touch.clientY);
+    const cardEl = el?.closest('[data-circuit-index]');
+    if (cardEl) {
+      const targetIdx = parseInt(cardEl.getAttribute('data-circuit-index'), 10);
+      if (!isNaN(targetIdx) && targetIdx !== dragOverIndex) {
+        setDragOverIndex(targetIdx);
+      }
+    }
+  };
+
+  const handleTouchEndGrip = () => {
+    if (!isAdmin || draggedIndex === null) return;
+    if (dragOverIndex !== null && dragOverIndex !== draggedIndex) {
+      reorderCards(draggedIndex, dragOverIndex);
+    }
+    setDraggedIndex(null);
+    setDragOverIndex(null);
   };
 
   // Controle de Abertura da Votação pelo Admin
@@ -310,13 +385,14 @@ export default function App() {
           </div>
         </section>
 
-        {/* Grade de Cards com Foco Total Imediato */}
+        {/* Grade de Cards com Foco Total Imediato e Ordenação Drag & Drop para Admin */}
         {viewMode === 'grid' ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 pt-1">
-            {circuits.map((circuit) => (
+            {circuits.map((circuit, index) => (
               <CircuitCard
                 key={circuit.id}
                 circuit={circuit}
+                index={index}
                 isAdmin={isAdmin}
                 isLiked={!!userLikes[circuit.id]}
                 onToggleLike={handleToggleLike}
@@ -325,6 +401,15 @@ export default function App() {
                 onDeleteCircuit={handleDeleteCircuit}
                 isVotingEnabled={isVotingEnabled}
                 onDisabledVotingClick={handleDisabledVotingClick}
+                onDragStart={handleDragStart}
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
+                onDragEnd={handleDragEnd}
+                isDragging={draggedIndex === index}
+                isDragOver={dragOverIndex === index}
+                onTouchStartGrip={handleTouchStartGrip}
+                onTouchMoveGrip={handleTouchMoveGrip}
+                onTouchEndGrip={handleTouchEndGrip}
               />
             ))}
           </div>

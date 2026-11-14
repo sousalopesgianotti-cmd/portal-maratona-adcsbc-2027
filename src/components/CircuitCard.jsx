@@ -14,11 +14,13 @@ import {
   UserCheck, 
   Gift, 
   Package,
-  Lock
+  Lock,
+  GripVertical
 } from 'lucide-react';
 
 export default function CircuitCard({
   circuit,
+  index,
   isAdmin,
   isLiked,
   onToggleLike,
@@ -26,7 +28,16 @@ export default function CircuitCard({
   onEditCircuit,
   onDeleteCircuit,
   isVotingEnabled,
-  onDisabledVotingClick
+  onDisabledVotingClick,
+  onDragStart,
+  onDragOver,
+  onDrop,
+  onDragEnd,
+  isDragging,
+  isDragOver,
+  onTouchStartGrip,
+  onTouchMoveGrip,
+  onTouchEndGrip
 }) {
   const [stagesExpanded, setStagesExpanded] = useState(false);
 
@@ -60,7 +71,21 @@ export default function CircuitCard({
   return (
     <article 
       id={`circuit-${circuit.id}`}
-      className="group bg-darkbg-850/95 border border-slate-700/70 rounded-2xl overflow-hidden shadow-2xl hover:border-slate-500/90 transition-all duration-300 flex flex-col h-full relative scroll-mt-24"
+      data-circuit-index={index}
+      draggable={isAdmin}
+      onDragStart={(e) => onDragStart && onDragStart(e, index)}
+      onDragOver={(e) => onDragOver && onDragOver(e, index)}
+      onDrop={(e) => onDrop && onDrop(e, index)}
+      onDragEnd={onDragEnd}
+      className={`group bg-darkbg-850/95 border rounded-2xl overflow-hidden shadow-2xl transition-all duration-200 flex flex-col h-full relative scroll-mt-24 ${
+        isAdmin ? 'cursor-grab active:cursor-grabbing' : ''
+      } ${
+        isDragging 
+          ? 'opacity-40 scale-95 border-adcorange border-dashed ring-2 ring-adcorange' 
+          : isDragOver
+            ? 'border-adcorange ring-2 ring-adcorange/80 scale-[1.02] shadow-adcorange/30'
+            : 'border-slate-700/70 hover:border-slate-500/90'
+      }`}
     >
       {/* Faixa decorativa superior fina */}
       <div className="bg-gradient-to-r from-adcorange via-orange-500 to-adclime h-1 w-full flex-shrink-0" />
@@ -83,6 +108,17 @@ export default function CircuitCard({
 
           {isAdmin && (
             <div className="flex items-center gap-1.5">
+              <div
+                onTouchStart={(e) => onTouchStartGrip && onTouchStartGrip(e, index)}
+                onTouchMove={(e) => onTouchMoveGrip && onTouchMoveGrip(e)}
+                onTouchEnd={onTouchEndGrip}
+                className="touch-none flex items-center gap-1 px-2 py-1 rounded-lg bg-darkbg-950 text-slate-300 hover:text-white border border-slate-700/80 text-[11px] font-semibold cursor-grab active:cursor-grabbing select-none shadow-sm"
+                title="Segure e arraste este card para organizar a ordem na página"
+              >
+                <GripVertical className="w-3.5 h-3.5 text-adcorange" />
+                <span className="text-[10px]">Arrastar</span>
+              </div>
+
               <button
                 onClick={() => onEditCircuit(circuit)}
                 className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-adcorange text-white font-bold text-xs shadow hover:brightness-110 active:scale-95 transition-all"
