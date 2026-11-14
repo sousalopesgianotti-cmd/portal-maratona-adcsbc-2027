@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { Lock, X, KeyRound, ShieldAlert, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { Lock, X, KeyRound, ShieldAlert, CheckCircle2, AlertTriangle, Eye, EyeOff } from 'lucide-react';
 import { storageService } from '../services/storageService';
 
 export default function ChangePasswordModal({ isOpen, onClose, onShowToast }) {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
@@ -64,6 +67,9 @@ export default function ChangePasswordModal({ isOpen, onClose, onShowToast }) {
     setCurrentPassword('');
     setNewPassword('');
     setConfirmPassword('');
+    setShowCurrentPassword(false);
+    setShowNewPassword(false);
+    setShowConfirmPassword(false);
     setError('');
     setShowConfirmDialog(false);
     onClose();
@@ -103,16 +109,29 @@ export default function ChangePasswordModal({ isOpen, onClose, onShowToast }) {
               <div className="relative">
                 <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
-                  type="password"
+                  type={showCurrentPassword ? "text" : "password"}
                   value={currentPassword}
                   onChange={(e) => {
                     setCurrentPassword(e.target.value);
                     setError('');
                   }}
                   placeholder="Digite sua senha atual..."
-                  className="w-full pl-10 pr-4 py-2.5 bg-darkbg-950 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-adcorange focus:ring-1 focus:ring-adcorange transition-all"
+                  className="w-full pl-10 pr-10 py-2.5 bg-darkbg-950 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-adcorange focus:ring-1 focus:ring-adcorange transition-all"
                   autoFocus
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-white rounded-lg transition-colors focus:outline-none"
+                  title={showCurrentPassword ? "Ocultar senha" : "Visualizar senha"}
+                  aria-label={showCurrentPassword ? "Ocultar senha" : "Visualizar senha"}
+                >
+                  {showCurrentPassword ? (
+                    <EyeOff className="w-4 h-4 text-adcorange" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
               </div>
             </div>
 
@@ -124,15 +143,28 @@ export default function ChangePasswordModal({ isOpen, onClose, onShowToast }) {
               <div className="relative">
                 <KeyRound className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
-                  type="password"
+                  type={showNewPassword ? "text" : "password"}
                   value={newPassword}
                   onChange={(e) => {
                     setNewPassword(e.target.value);
                     setError('');
                   }}
                   placeholder="Mínimo 4 caracteres..."
-                  className="w-full pl-10 pr-4 py-2.5 bg-darkbg-950 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-adcorange focus:ring-1 focus:ring-adcorange transition-all"
+                  className="w-full pl-10 pr-10 py-2.5 bg-darkbg-950 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-adcorange focus:ring-1 focus:ring-adcorange transition-all"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-white rounded-lg transition-colors focus:outline-none"
+                  title={showNewPassword ? "Ocultar senha" : "Visualizar senha"}
+                  aria-label={showNewPassword ? "Ocultar senha" : "Visualizar senha"}
+                >
+                  {showNewPassword ? (
+                    <EyeOff className="w-4 h-4 text-adcorange" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
               </div>
             </div>
 
@@ -144,15 +176,28 @@ export default function ChangePasswordModal({ isOpen, onClose, onShowToast }) {
               <div className="relative">
                 <CheckCircle2 className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
-                  type="password"
+                  type={showConfirmPassword ? "text" : "password"}
                   value={confirmPassword}
                   onChange={(e) => {
                     setConfirmPassword(e.target.value);
                     setError('');
                   }}
                   placeholder="Repita a nova senha..."
-                  className="w-full pl-10 pr-4 py-2.5 bg-darkbg-950 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-adcorange focus:ring-1 focus:ring-adcorange transition-all"
+                  className="w-full pl-10 pr-10 py-2.5 bg-darkbg-950 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-adcorange focus:ring-1 focus:ring-adcorange transition-all"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-white rounded-lg transition-colors focus:outline-none"
+                  title={showConfirmPassword ? "Ocultar senha" : "Visualizar senha"}
+                  aria-label={showConfirmPassword ? "Ocultar senha" : "Visualizar senha"}
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff className="w-4 h-4 text-adcorange" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
               </div>
             </div>
 

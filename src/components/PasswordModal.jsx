@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Lock, X, KeyRound, ShieldAlert } from 'lucide-react';
+import { Lock, X, KeyRound, ShieldAlert, Eye, EyeOff } from 'lucide-react';
 import { storageService } from '../services/storageService';
 
 export default function PasswordModal({ isOpen, onClose, onSuccess }) {
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(false);
 
   if (!isOpen) return null;
@@ -13,17 +14,25 @@ export default function PasswordModal({ isOpen, onClose, onSuccess }) {
     if (storageService.verifyPassword(password)) {
       setError(false);
       setPassword('');
+      setShowPassword(false);
       onSuccess();
     } else {
       setError(true);
     }
   };
 
+  const handleClose = () => {
+    setPassword('');
+    setShowPassword(false);
+    setError(false);
+    onClose();
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
       <div className="relative w-full max-w-md bg-darkbg-850 border border-slate-700/60 rounded-2xl p-6 shadow-2xl">
         <button
-          onClick={onClose}
+          onClick={handleClose}
           className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800/60"
         >
           <X className="w-5 h-5" />
@@ -51,7 +60,7 @@ export default function PasswordModal({ isOpen, onClose, onSuccess }) {
             <div className="relative">
               <KeyRound className="w-5 h-5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 autoFocus
                 value={password}
                 onChange={(e) => {
@@ -59,8 +68,21 @@ export default function PasswordModal({ isOpen, onClose, onSuccess }) {
                   setError(false);
                 }}
                 placeholder="Digite sua senha de acesso..."
-                className="w-full pl-11 pr-4 py-3 bg-darkbg-950 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-adcorange focus:ring-1 focus:ring-adcorange transition-all"
+                className="w-full pl-11 pr-11 py-3 bg-darkbg-950 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-adcorange focus:ring-1 focus:ring-adcorange transition-all"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-white rounded-lg transition-colors focus:outline-none"
+                title={showPassword ? "Ocultar senha" : "Visualizar senha"}
+                aria-label={showPassword ? "Ocultar senha" : "Visualizar senha"}
+              >
+                {showPassword ? (
+                  <EyeOff className="w-5 h-5 text-adcorange" />
+                ) : (
+                  <Eye className="w-5 h-5" />
+                )}
+              </button>
             </div>
             {error && (
               <div className="flex items-center gap-2 mt-2 text-red-400 text-xs">
@@ -73,7 +95,7 @@ export default function PasswordModal({ isOpen, onClose, onSuccess }) {
           <div className="flex items-center justify-end gap-3 pt-2">
             <button
               type="button"
-              onClick={onClose}
+              onClick={handleClose}
               className="px-4 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800/80 transition-colors"
             >
               Cancelar
