@@ -48,7 +48,7 @@ export const INITIAL_CIRCUITS = [
     },
     teamBenefits: "Desconto especial de R$ 79/atleta para grupo ADCSBC acima de 15 inscritos, espaço garantido para a tenda oficial da equipe na areia e isenção de taxa para a comissão técnica.",
     logistics: "Distância SBC: ~240 km (~3h30). Excelente infraestrutura hoteleira.",
-    likes: 18,
+    likes: 0,
     order: 1
   },
   {
@@ -80,7 +80,7 @@ export const INITIAL_CIRCUITS = [
     },
     teamBenefits: "Inscrição com valor popular (R$ 120,00), reserva de área coletiva para churrasco e confraternização da equipe ADCSBC e suporte para acomodação em grupo.",
     logistics: "Distância SBC: ~300 km (~4h). Viagem de integração muito elogiada pelos atletas.",
-    likes: 12,
+    likes: 0,
     order: 2
   },
   {
@@ -113,7 +113,7 @@ export const INITIAL_CIRCUITS = [
     },
     teamBenefits: "Condição VIP exclusiva com jantar e escuna privativa inclusos no pacote, acesso às instalações do clube para acompanhantes e mentoria técnica conjunta com lendas da maratona aquática.",
     logistics: "Distância SBC: ~75 km (~1h15 via Anchieta/Imigrantes). Acesso rápido no litoral.",
-    likes: 27,
+    likes: 0,
     order: 3
   },
   {
@@ -150,7 +150,7 @@ export const INITIAL_CIRCUITS = [
     },
     teamBenefits: "Condição de equipe campeã geral com desconto garantido, localização privilegiada para montagem da tenda ADCSBC, pontuação dobrada para ranking de equipes e facilidade logística de bate-e-volta.",
     logistics: "Distância SBC: ~80 km (~1h20). Bate-e-volta fácil e econômico.",
-    likes: 31,
+    likes: 0,
     order: 4
   },
   {
@@ -187,7 +187,7 @@ export const INITIAL_CIRCUITS = [
     },
     teamBenefits: "Opção de pacote com desconto progressivo para atletas que fizerem mais de 3 etapas no ano, inscrição gratuita para o treinador e pontuação de equipe.",
     logistics: "Distâncias variadas (de 50km a 150km de SBC). Facilidade para etapas locais.",
-    likes: 15,
+    likes: 0,
     order: 5
   },
   {
@@ -221,7 +221,7 @@ export const INITIAL_CIRCUITS = [
     },
     teamBenefits: "Desconto para inscrição conjunta da equipe ADCSBC e possibilidade de bate-e-volta com custo reduzido.",
     logistics: "Distância SBC: ~90 km (~1h20).",
-    likes: 9,
+    likes: 0,
     order: 6
   }
 ];

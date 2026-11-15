@@ -49,7 +49,7 @@ export default function App() {
     setToast(toastData);
   };
 
-  // Sincronização de Curtidas Globais em Nuvem (Supabase + Realtime + Polling)
+  // Sincronização de Curtidas Globais em Nuvem (PostgreSQL Neon Cloud + Polling Rápido)
   const syncCloudLikes = async () => {
     const cloud = await likesService.fetchCloudLikes();
     if (cloud && cloud.likesCountMap) {
@@ -60,20 +60,19 @@ export default function App() {
   };
 
   useEffect(() => {
-    // 1. Sincronização inicial ao carregar a página
+    // 1. Sincronização inicial ao abrir a página
     syncCloudLikes();
 
-    // 2. Ouvinte Realtime via WebSockets do Supabase
-    const unsubscribe = likesService.subscribe(() => {
-      syncCloudLikes();
-    });
+    // 2. Polling contínuo a cada 3 segundos para sincronizar PC e celulares
+    const pollInterval = setInterval(syncCloudLikes, 3000);
 
-    // 3. Polling de redundância a cada 5 segundos para dispositivos móveis
-    const pollInterval = setInterval(syncCloudLikes, 5000);
+    // 3. Sincronização imediata ao focar na janela/aba (ex: voltar para o Safari no celular)
+    const handleFocus = () => syncCloudLikes();
+    window.addEventListener('focus', handleFocus);
 
     return () => {
-      unsubscribe();
       clearInterval(pollInterval);
+      window.removeEventListener('focus', handleFocus);
     };
   }, []);
 

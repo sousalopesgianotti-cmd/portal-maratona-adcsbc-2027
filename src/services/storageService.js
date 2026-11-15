@@ -1,7 +1,7 @@
 import { INITIAL_CIRCUITS } from '../data/initialCircuits';
 
 const STORAGE_KEYS = {
-  CIRCUITS: 'adcsbc_circuits_2027_v2', // v2 para garantir atualização dos 8 novos campos
+  CIRCUITS: 'adcsbc_circuits_2027_v4', // v4 para zerar curtidas mock e forçar contagem real compartilhada
   BALLOTS: 'adcsbc_ballots_2027_v1',
   USER_VOTE: 'adcsbc_user_ballot_2027_v1',
   USER_LIKES: 'adcsbc_user_likes_2027_v1',
