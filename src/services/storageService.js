@@ -39,6 +39,8 @@ const INITIAL_MOCK_BALLOTS = [
 ];
 
 export const storageService = {
+  getDeviceId: () => getDeviceId(),
+
   // ---- CIRCUITOS ----
   getCircuits: () => {
     try {
@@ -153,6 +155,21 @@ export const storageService = {
     } catch (err) {
       console.error('Erro ao zerar curtidas no LocalStorage:', err);
       return { success: false, circuits: [] };
+    }
+  },
+
+  syncLikesFromCloud: (likesCountMap) => {
+    try {
+      const circuits = storageService.getCircuits();
+      const updated = circuits.map(c => ({
+        ...c,
+        likes: likesCountMap[c.id] || 0
+      }));
+      storageService.saveCircuits(updated);
+      return updated;
+    } catch (err) {
+      console.error('Erro ao sincronizar curtidas da nuvem:', err);
+      return storageService.getCircuits();
     }
   },
 

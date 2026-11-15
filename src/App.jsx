@@ -9,6 +9,7 @@ import PasswordModal from './components/PasswordModal';
 import ChangePasswordModal from './components/ChangePasswordModal';
 import Toast from './components/Toast';
 import { storageService } from './services/storageService';
+import { likesService } from './services/likesService';
 import { 
   Heart, 
   Flame,
@@ -48,6 +49,34 @@ export default function App() {
     setToast(toastData);
   };
 
+  // Sincronização de Curtidas Globais em Nuvem (Supabase + Realtime + Polling)
+  const syncCloudLikes = async () => {
+    const cloud = await likesService.fetchCloudLikes();
+    if (cloud && cloud.likesCountMap) {
+      const updatedCircuits = storageService.syncLikesFromCloud(cloud.likesCountMap);
+      setCircuits(updatedCircuits);
+      setUserLikes(cloud.userLikesMap);
+    }
+  };
+
+  useEffect(() => {
+    // 1. Sincronização inicial ao carregar a página
+    syncCloudLikes();
+
+    // 2. Ouvinte Realtime via WebSockets do Supabase
+    const unsubscribe = likesService.subscribe(() => {
+      syncCloudLikes();
+    });
+
+    // 3. Polling de redundância a cada 5 segundos para dispositivos móveis
+    const pollInterval = setInterval(syncCloudLikes, 5000);
+
+    return () => {
+      unsubscribe();
+      clearInterval(pollInterval);
+    };
+  }, []);
+
   useEffect(() => {
     if (toast) {
       const timer = setTimeout(() => setToast(null), 4000);
@@ -55,8 +84,9 @@ export default function App() {
     }
   }, [toast]);
 
-  // Ações de Curtidas com Limite Máximo de 3 Escolhas
-  const handleToggleLike = (circuitId) => {
+  // Ações de Curtidas com Sincronização Imediata (Otimista + Nuvem)
+  const handleToggleLike = async (circuitId) => {
+    // 1. Atualização local instantânea (0ms)
     const res = storageService.toggleLike(circuitId);
     if (res.blocked) {
       showToast({
@@ -82,24 +112,38 @@ export default function App() {
         message: `Curtida removida. (${totalNow}/3 escolhas)`
       });
     }
+
+    // 2. Persistência na nuvem (Supabase) para todos os celulares e computadores
+    const cloudRes = await likesService.toggleLike(circuitId);
+    if (cloudRes.blocked) {
+      // Reverte caso a nuvem detecte limite atingido
+      syncCloudLikes();
+    } else {
+      // Re-sincroniza a contagem global consolidada
+      syncCloudLikes();
+    }
   };
 
-  // Zerar Todas as Curtidas dos Cards (Admin) com Diálogo de Confirmação
-  const handleResetLikes = () => {
+  // Zerar Todas as Curtidas dos Cards (Admin) com Diálogo de Confirmação e Nuvem
+  const handleResetLikes = async () => {
     if (!isAdmin) return;
     const confirmReset = window.confirm(
-      'Deseja realmente zerar todas as curtidas dos cards? Todos os contadores voltarão para zero.'
+      'Deseja realmente zerar todas as curtidas dos cards? Todos os contadores voltarão para zero em todos os celulares e computadores.'
     );
     if (confirmReset) {
+      // 1. Zera localmente
       const res = storageService.resetAllLikes();
-      if (res.success) {
-        setCircuits(res.circuits);
-        setUserLikes({});
-        showToast({
-          type: 'info',
-          message: '❤️ Todas as curtidas foram zeradas pela comissão técnica.'
-        });
-      }
+      setCircuits(res.circuits);
+      setUserLikes({});
+
+      // 2. Zera na nuvem compartilhada
+      await likesService.resetAllLikes();
+      syncCloudLikes();
+
+      showToast({
+        type: 'info',
+        message: '❤️ Todas as curtidas foram zeradas pela comissão técnica.'
+      });
     }
   };
 
