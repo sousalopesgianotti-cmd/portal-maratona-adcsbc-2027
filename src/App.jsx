@@ -112,11 +112,15 @@ export default function App() {
       });
     }
 
-    // 2. Persistência na nuvem (Supabase) para todos os celulares e computadores
+    // 2. Persistência na API serverless: soma com todos os atletas do planeta
     const cloudRes = await likesService.toggleLike(circuitId);
     if (cloudRes.blocked) {
       // Reverte caso a nuvem detecte limite atingido
       syncCloudLikes();
+    } else if (cloudRes.success && cloudRes.likesCountMap) {
+      const updatedCircuits = storageService.syncLikesFromCloud(cloudRes.likesCountMap);
+      setCircuits(updatedCircuits);
+      setUserLikes(cloudRes.userLikesMap);
     } else {
       // Re-sincroniza a contagem global consolidada
       syncCloudLikes();
