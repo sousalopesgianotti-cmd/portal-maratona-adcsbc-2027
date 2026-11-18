@@ -77,7 +77,7 @@ export default function CircuitCard({
       onDragOver={(e) => onDragOver && onDragOver(e, index)}
       onDrop={(e) => onDrop && onDrop(e, index)}
       onDragEnd={onDragEnd}
-      className={`group bg-darkbg-850/95 border rounded-2xl overflow-hidden shadow-2xl transition-all duration-200 flex flex-col h-full relative scroll-mt-24 ${
+      className={`group bg-darkbg-850/95 border rounded-2xl overflow-hidden shadow-2xl transition-all duration-200 flex flex-col h-full relative scroll-mt-4 md:scroll-mt-24 ${
         isAdmin ? 'cursor-grab active:cursor-grabbing' : ''
       } ${
         isDragging 

@@ -29,11 +29,11 @@ export default function Header({
   onDisabledVotingClick
 }) {
   return (
-    <header className="sticky top-0 z-40 w-full glass-panel border-b border-slate-800/80 shadow-2xl">
+    <header className="relative md:sticky md:top-0 z-40 w-full bg-darkbg-950 md:bg-darkbg-950/98 md:backdrop-blur-md border-b border-slate-800 shadow-2xl">
       {/* Faixa superior de destaque da equipe */}
       <div className="bg-gradient-to-r from-adcorange via-adcorange-light to-adclime h-1 w-full" />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 sm:py-3.5">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           
           {/* Brasão e Identidade Visual ADCSBC */}
